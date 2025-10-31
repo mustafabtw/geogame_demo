@@ -15,7 +15,7 @@ body, html, input, button {
     background-color: #050505; 
 }
 
-/* --- Başlat Menüsü Stilleri (Teamvisionary Estetiği) --- */
+/* --- Başlat Menüsü Stilleri --- */
 .overlay-screen {
     position: absolute;
     top: 0;
@@ -30,66 +30,50 @@ body, html, input, button {
     z-index: 2000;
     transition: opacity 0.5s ease;
 }
-
-/* Başlık stili küçültüldü ve sadeleştirildi */
 .game-title {
     font-family: 'Inter', sans-serif; 
     font-weight: 700; 
-    font-size: 3.5rem; /* Boyut küçültüldü */
+    font-size: 3.5rem; 
     color: #f0f0f0; 
-    text-shadow: none; /* Parlama kaldırıldı */
+    text-shadow: none; 
     margin: 0;
-    letter-spacing: 0.5px; /* Harf aralığı ayarlandı */
+    letter-spacing: 0.5px; 
 }
-
 .slogan {
-    font-size: 1.1rem; /* Biraz küçültüldü */
+    font-size: 1.1rem; 
     color: #a3a3a3;
     margin-top: 15px;
     margin-bottom: 30px;
     letter-spacing: 0.5px;
 }
-
-/* === YENİ BUTON STİLLERİ (Teamvisionary gibi) === */
 .menu-buttons {
-    display: flex; /* Butonları yan yana getir */
-    gap: 15px; /* Aralarına boşluk koy */
+    display: flex; 
+    gap: 15px; 
 }
-
 .menu-buttons button {
     font-family: 'Inter', sans-serif;
-    font-weight: 500; /* Medium */
-    font-size: 1rem; /* Boyut küçültüldü */
-    padding: 10px 24px; /* İç boşluk ayarlandı */
+    font-weight: 500; 
+    font-size: 1rem; 
+    padding: 10px 24px; 
     margin: 0;
     cursor: pointer;
-    border-radius: 30px; /* Tam oval */
-    
-    /* Saydam beyaz kenarlık */
+    border-radius: 30px; 
     border: 1px solid rgba(255, 255, 255, 0.7); 
-    
-    /* Saydam arka plan */
     background: transparent;
-    
-    color: rgba(255, 255, 255, 0.9); /* Yarı saydam beyaz yazı */
-    
+    color: rgba(255, 255, 255, 0.9); 
     transition: background-color 0.3s ease, color 0.3s ease;
 }
-
-/* Hover (üzerine gelme) efekti */
 .menu-buttons button:hover {
-    background: #fff; /* Arka planı beyaz yap */
-    color: #000; /* Yazıyı siyah yap */
+    background: #fff; 
+    color: #000; 
     border-color: #fff; 
 }
-
 .menu-buttons button:disabled {
     background: transparent;
     color: #555;
     border-color: #555;
     cursor: not-allowed;
 }
-/* === YENİ BUTON STİLLERİ BİTTİ === */
 
 /* --- Oyun Arayüzü --- */
 #game-ui {
@@ -133,13 +117,12 @@ body, html, input, button {
     background: #222; 
     color: white; 
 }
-/* Tahmin et butonunu da temaya uygun hale getirelim */
 #btn-guess { 
     padding: 10px 15px; 
     font-size: 1rem; 
     cursor: pointer; 
     border: none; 
-    background-color: #D4AF37; /* Altın Sarısı */
+    background-color: #D4AF37; 
     color: #000; 
     font-weight: bold;
     border-radius: 0 5px 5px 0; 
@@ -148,14 +131,12 @@ body, html, input, button {
 #btn-guess:hover {
     background-color: #ffdd70;
 }
-
 .hint-buttons { 
     display: flex; 
     justify-content: space-between; 
     width: 100%; 
     gap: 10px; 
 }
-/* İpucu butonları altın sarısı temasıyla uyumlu */
 .hint-btn { 
     flex-grow: 1; 
     padding: 10px 15px; 
@@ -225,4 +206,18 @@ body, html, input, button {
 }
 #btn-popup-close:hover {
     background-color: #777;
+}
+
+/* === YENİ: Bayrak Renk Kutuları Stili === */
+.color-swatches {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+.color-swatch {
+    width: 50px;
+    height: 50px;
+    border: 2px solid #fff;
+    border-radius: 5px;
 }

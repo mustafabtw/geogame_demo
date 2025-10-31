@@ -1,12 +1,37 @@
 // 'window.onload' sarmalayıcısı, tüm kütüphanelerin yüklenmesini bekler.
 window.onload = function() {
 
-    // --- OYUN VERİTABANI ---
+    // --- OYUN VERİTABANI (Bayrak Renkleri ile Güncellendi) ---
     const gameData = [
-        { level: 1, city: "Paris", coords: [2.3522, 48.8566], hint_food: "images/ipucu-kruvasan.png", hint_plate: "Şehir Kodu: 75" },
-        { level: 2, city: "Tokyo", coords: [139.6917, 35.6895], hint_food: "images/ipucu-sushi.png", hint_plate: "Bölge: Shinagawa (品川)" },
-        { level: 3, city: "Cairo", coords: [31.2357, 30.0444], hint_food: "images/ipucu-koshari.png", hint_plate: "Ülke Kodu: ET" },
-        { level: 4, city: "Ankara", coords: [32.8597, 39.9334], hint_food: "images/ipucu-simit.png", hint_plate: "Plaka Kodu: 06" }
+        {
+            level: 1,
+            city: "Paris",
+            coords: [2.3522, 48.8566],
+            hint_food: "images/ipucu-kruvasan.png",
+            hint_colors: ['#0055A4', '#FFFFFF', '#EF4135'] // Mavi, Beyaz, Kırmızı (Fransa)
+        },
+        {
+            level: 2,
+            city: "Tokyo",
+            coords: [139.6917, 35.6895],
+            hint_food: "images/ipucu-sushi.png",
+            hint_colors: ['#FFFFFF', '#BC002D'] // Beyaz, Kırmızı (Japonya)
+        },
+        {
+            level: 3,
+            city: "Cairo", // Kahire
+            coords: [31.2357, 30.0444],
+            hint_food: "images/ipucu-koshari.png",
+            hint_colors: ['#CE1126', '#FFFFFF', '#000000'] // Kırmızı, Beyaz, Siyah (Mısır)
+        },
+        {
+            level: 4,
+            city: "Ankara",
+            coords: [32.8597, 39.9334],
+            hint_food: "images/ipucu-simit.png",
+            hint_colors: ['#E30A17', '#FFFFFF'] // Kırmızı, Beyaz (Türkiye)
+        }
+        // ... 25 seviyeye kadar eklenecek
     ];
 
     // --- DOM ELEMENTLERİNİ ALMA ---
@@ -19,7 +44,7 @@ window.onload = function() {
     const guessInput = document.getElementById('guess-input');
     const btnGuess = document.getElementById('btn-guess');
     const btnHintFood = document.getElementById('btn-hint-food');
-    const btnHintPlate = document.getElementById('btn-hint-plate'); 
+    const btnHintColors = document.getElementById('btn-hint-colors'); // Değişti
     const popupOverlay = document.getElementById('popup-overlay');
     const popupTitle = document.getElementById('popup-title');
     const popupContent = document.getElementById('popup-content');
@@ -33,34 +58,21 @@ window.onload = function() {
     let playerPawn; 
     let gamePathCoords; 
 
-    // --- HARİTAYI HEMEN BAŞLAT (Menünün Arkasında, PİYONSUZ) ---
-    // === CartoDB Dark Matter (Etiketsiz) ===
-    const cartoDarkLayer = new ol.layer.Tile({
-        source: new ol.source.XYZ({
-            url: 'https://{a-c}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png',
-            attributions: '© OpenStreetMap contributors, © CARTO'
-        })
-    });
-    
-    map = new ol.Map({
-        target: 'map',
-        layers: [ cartoDarkLayer ], // PİYONSUZ BAŞLAT
-        view: new ol.View({
-            center: ol.proj.fromLonLat([10, 30]),
-            zoom: 2,
-        }),
-    });
-
-    // --- OYUN KATMANINI OLUŞTURAN FONKSİYON (Piyonu ekler) ---
-    function initializeGameLayers() {
-        // Koordinatları 'ol' objesiyle dönüştür
+    // --- HARİTA VE OYUN KURULUM FONKSİYONU ---
+    function initializeGame() {
         gamePathCoords = gameData.map(level => level.coords).map(coord => ol.proj.fromLonLat(coord));
         
-        // --- Oyun Katmanı (Piyon) ---
+        const cartoDarkLayer = new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                url: 'https://{a-c}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png',
+                attributions: '© OpenStreetMap contributors, © CARTO'
+            })
+        });
+
         const playerStyle = new ol.style.Style({
             image: new ol.style.Circle({
                 radius: 10,
-                fill: new ol.style.Fill({ color: '#FFFFFF' }), // BEYAZ PİYON
+                fill: new ol.style.Fill({ color: '#FFFFFF' }),
                 stroke: new ol.style.Stroke({ color: 'rgba(255,255,255,0.3)', width: 3 })
             })
         });
@@ -70,28 +82,35 @@ window.onload = function() {
         playerPawn.setStyle(playerStyle);
 
         gameLayer = new ol.layer.Vector({
-            source: new ol.source.Vector({
-                features: [playerPawn]
-            }),
+            source: new ol.source.Vector({ features: [playerPawn] }),
             zIndex: 10 
         });
 
-        // Oyun katmanını haritaya ekle
-        map.addLayer(gameLayer);
+        map = new ol.Map({
+            target: 'map',
+            layers: [ cartoDarkLayer, gameLayer ],
+            view: new ol.View({
+                center: ol.proj.fromLonLat([10, 30]),
+                zoom: 2,
+            }),
+        });
+
+        setTimeout(() => {
+            loadLevel(0); 
+        }, 1000); 
     }
 
     // --- OYUN FONKSİYONLARI ---
     function loadLevel(levelIndex) {
+        // ... (loadLevel fonksiyonu aynı, değişiklik yok) ...
         const level = gameData[levelIndex];
         currentLevel = levelIndex;
-        
         levelCountEl.textContent = level.level;
         guessInput.value = "";
         updateTokenUI();
-        
         map.getView().animate({
             center: ol.proj.fromLonLat(level.coords),
-            zoom: 5, // Daha uzak zoom
+            zoom: 6, 
             duration: 2000
         });
         playerPawn.getGeometry().setCoordinates(ol.proj.fromLonLat(level.coords));
@@ -100,7 +119,7 @@ window.onload = function() {
     function updateTokenUI() {
         tokenCountEl.textContent = playerTokens;
         btnHintFood.disabled = (playerTokens < 10);
-        btnHintPlate.disabled = (playerTokens < 10);
+        btnHintColors.disabled = (playerTokens < 10); // Değişti
     }
 
     function showPopup(title, contentHTML) {
@@ -119,16 +138,14 @@ window.onload = function() {
     }
 
     function checkGuess() {
+        // ... (checkGuess fonksiyonu aynı, değişiklik yok) ...
         const answer = gameData[currentLevel].city.toLowerCase();
         const guess = guessInput.value.trim().toLowerCase();
-
         if (guess === answer) {
             playerTokens += 5;
             showPopup("Doğru!", `<p>Tebrikler! +5 Jeton kazandın.</p>`);
-            
             if (currentLevel < gameData.length - 1) {
                 const nextLevelIndex = currentLevel + 1;
-                
                 const newArc = new ol.Feature({
                     geometry: new ol.geom.LineString([
                         ol.proj.fromLonLat(gameData[currentLevel].coords),
@@ -142,12 +159,10 @@ window.onload = function() {
                     })
                 }));
                 gameLayer.getSource().addFeature(newArc);
-                
                 setTimeout(() => {
                     hidePopup();
                     loadLevel(nextLevelIndex);
                 }, 2000);
-                
             } else {
                 showPopup("Oyun Bitti!", "<p>Tüm seviyeleri tamamladın!</p>");
                 btnGuess.disabled = true;
@@ -159,20 +174,14 @@ window.onload = function() {
 
     // --- OLAY DİNLEYİCİLERİ ---
     btnStartGame.addEventListener('click', () => {
-        // Menüyü gizle
+        // ... (btnStartGame dinleyicisi aynı, değişiklik yok) ...
         gsap.to(startMenu, { duration: 0.5, opacity: 0, onComplete: () => {
             startMenu.style.display = 'none';
         }});
-
-        // Oyun arayüzünü göster
         gameUI.style.display = 'flex';
         gameUI.style.pointerEvents = 'all';
         gsap.to(gameUI, { duration: 0.5, opacity: 1, delay: 0.5 });
-        
-        // Piyonu oluştur ve haritaya ekle
         initializeGameLayers(); 
-        
-        // İlk seviyeye zoom yap
         setTimeout(() => {
             loadLevel(0);
         }, 500);
@@ -182,6 +191,7 @@ window.onload = function() {
     btnPopupClose.addEventListener('click', hidePopup);
 
     btnHintFood.addEventListener('click', () => {
+        // ... (btnHintFood dinleyicisi aynı, değişiklik yok) ...
         if (playerTokens >= 10) {
             playerTokens -= 10;
             updateTokenUI();
@@ -190,12 +200,23 @@ window.onload = function() {
         }
     });
 
-    btnHintPlate.addEventListener('click', () => {
+    // === DEĞİŞİKLİK BURADA: Plaka Kodu -> Bayrak Renkleri ===
+    btnHintColors.addEventListener('click', () => {
         if (playerTokens >= 10) {
             playerTokens -= 10;
             updateTokenUI();
-            const hintText = gameData[currentLevel].hint_plate; 
-            showPopup("İpucu: Plaka/Bölge Kodu", `<p>${hintText}</p>`);
+            
+            // Renkleri al
+            const hintColors = gameData[currentLevel].hint_colors;
+            
+            // Renk kutuları için HTML oluştur
+            let colorHTML = '<div class="color-swatches">';
+            hintColors.forEach(color => {
+                colorHTML += `<div class="color-swatch" style="background-color: ${color};"></div>`;
+            });
+            colorHTML += '</div>';
+            
+            showPopup("İpucu: Bayrak Renkleri", colorHTML);
         }
     });
 

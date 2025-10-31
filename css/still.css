@@ -1,0 +1,228 @@
+/* Bütün siteye yeni fontu uyguluyoruz */
+body, html, input, button {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Inter', sans-serif; /* YENİ FONT: Inter */
+    background: #000;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    background-color: #050505; 
+}
+
+/* --- Başlat Menüsü Stilleri (Teamvisionary Estetiği) --- */
+.overlay-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8); 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    transition: opacity 0.5s ease;
+}
+
+/* Başlık stili küçültüldü ve sadeleştirildi */
+.game-title {
+    font-family: 'Inter', sans-serif; 
+    font-weight: 700; 
+    font-size: 3.5rem; /* Boyut küçültüldü */
+    color: #f0f0f0; 
+    text-shadow: none; /* Parlama kaldırıldı */
+    margin: 0;
+    letter-spacing: 0.5px; /* Harf aralığı ayarlandı */
+}
+
+.slogan {
+    font-size: 1.1rem; /* Biraz küçültüldü */
+    color: #a3a3a3;
+    margin-top: 15px;
+    margin-bottom: 30px;
+    letter-spacing: 0.5px;
+}
+
+/* === YENİ BUTON STİLLERİ (Teamvisionary gibi) === */
+.menu-buttons {
+    display: flex; /* Butonları yan yana getir */
+    gap: 15px; /* Aralarına boşluk koy */
+}
+
+.menu-buttons button {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500; /* Medium */
+    font-size: 1rem; /* Boyut küçültüldü */
+    padding: 10px 24px; /* İç boşluk ayarlandı */
+    margin: 0;
+    cursor: pointer;
+    border-radius: 30px; /* Tam oval */
+    
+    /* Saydam beyaz kenarlık */
+    border: 1px solid rgba(255, 255, 255, 0.7); 
+    
+    /* Saydam arka plan */
+    background: transparent;
+    
+    color: rgba(255, 255, 255, 0.9); /* Yarı saydam beyaz yazı */
+    
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Hover (üzerine gelme) efekti */
+.menu-buttons button:hover {
+    background: #fff; /* Arka planı beyaz yap */
+    color: #000; /* Yazıyı siyah yap */
+    border-color: #fff; 
+}
+
+.menu-buttons button:disabled {
+    background: transparent;
+    color: #555;
+    border-color: #555;
+    cursor: not-allowed;
+}
+/* === YENİ BUTON STİLLERİ BİTTİ === */
+
+/* --- Oyun Arayüzü --- */
+#game-ui {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.85);
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+    width: 600px;
+    max-width: 90%;
+    opacity: 0;
+    pointer-events: none; 
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.status-bar { 
+    display: flex; 
+    width: 100%; 
+    gap: 10px;
+    justify-content: space-between; 
+    font-size: 1.1rem; 
+    font-weight: 700; 
+}
+.guess-area {
+    display: flex; 
+    width: 100%;
+}
+#guess-input { 
+    flex-grow: 1; 
+    padding: 10px; 
+    font-size: 1rem; 
+    border: 1px solid #555; 
+    border-radius: 5px 0 0 5px; 
+    background: #222; 
+    color: white; 
+}
+/* Tahmin et butonunu da temaya uygun hale getirelim */
+#btn-guess { 
+    padding: 10px 15px; 
+    font-size: 1rem; 
+    cursor: pointer; 
+    border: none; 
+    background-color: #D4AF37; /* Altın Sarısı */
+    color: #000; 
+    font-weight: bold;
+    border-radius: 0 5px 5px 0; 
+    transition: background-color 0.3s ease;
+}
+#btn-guess:hover {
+    background-color: #ffdd70;
+}
+
+.hint-buttons { 
+    display: flex; 
+    justify-content: space-between; 
+    width: 100%; 
+    gap: 10px; 
+}
+/* İpucu butonları altın sarısı temasıyla uyumlu */
+.hint-btn { 
+    flex-grow: 1; 
+    padding: 10px 15px; 
+    font-size: 0.9rem; 
+    cursor: pointer; 
+    border: none; 
+    border-radius: 5px; 
+    background-color: #5a3a00; 
+    color: #ffc107; 
+    transition: background-color 0.3s ease; 
+}
+.hint-btn:hover { background-color: #8c5a00; }
+.hint-btn:disabled { background-color: #333; color: #777; cursor: not-allowed; }
+
+/* --- Pop-up Stilleri --- */
+.hidden { 
+    display: none; 
+}
+#popup-overlay { 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    background: rgba(0, 0, 0, 0.8); 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    z-index: 2000; 
+    opacity: 0; 
+    pointer-events: none; 
+}
+#popup-box { 
+    background: #1a1a1a;
+    padding: 20px; 
+    border-radius: 10px; 
+    text-align: center; 
+    color: #f0f0f0; 
+    max-width: 500px;
+    border: 1px solid #555;
+}
+#popup-title { 
+    margin-top: 0; 
+    color: #D4AF37; 
+}
+#popup-content img { 
+    max-width: 100%; 
+    height: auto; 
+    max-height: 300px; 
+    border-radius: 5px; 
+    margin-bottom: 10px; 
+}
+#popup-content p { 
+    font-size: 1.5rem; 
+    font-weight: 700; 
+    color: #fff; 
+}
+#btn-popup-close { 
+    font-size: 1rem; 
+    padding: 10px 20px; 
+    margin-top: 15px; 
+    cursor: pointer; 
+    border: none; 
+    border-radius: 5px; 
+    background-color: #555; 
+    color: white;
+}
+#btn-popup-close:hover {
+    background-color: #777;
+}

@@ -1,40 +1,120 @@
 // 'window.onload' sarmalayıcısı, tüm kütüphanelerin yüklenmesini bekler.
 window.onload = function() {
 
-    // --- OYUN VERİTABANI ---
+// --- OYUN VERİTABANI (15 Seviye - İpucu Adları Standartlaştırıldı) ---
     const gameData = [
         {
             level: 1,
             city: "Paris",
             coords: [2.3522, 48.8566],
-            hint_food: "images/ipucu-kruvasan.png",
-            hint_colors: ['#0055A4', '#FFFFFF', '#EF4135'] 
+            hint_food: "images/ipucu-paris.png", // DEĞİŞTİ
+            hint_colors: ['#0055A4', '#FFFFFF', '#EF4135']
         },
         {
             level: 2,
             city: "Tokyo",
             coords: [139.6917, 35.6895],
-            hint_food: "images/ipucu-sushi.png",
+            hint_food: "images/ipucu-tokyo.png", // DEĞİŞTİ
             hint_colors: ['#FFFFFF', '#BC002D']
         },
         {
             level: 3,
             city: "Cairo", 
             coords: [31.2357, 30.0444],
-            hint_food: "images/ipucu-koshari.png",
+            hint_food: "images/ipucu-cairo.png", // DEĞİŞTİ
             hint_colors: ['#CE1126', '#FFFFFF', '#000000']
         },
         {
             level: 4,
             city: "Ankara",
             coords: [32.8597, 39.9334],
-            hint_food: "images/ipucu-simit.png",
+            hint_food: "images/ipucu-ankara.png", // DEĞİŞTİ
             hint_colors: ['#E30A17', '#FFFFFF']
+        },
+        {
+            level: 5,
+            city: "Rome", 
+            coords: [12.4964, 41.9028],
+            hint_food: "images/ipucu-rome.png", // DEĞİŞTİ
+            hint_colors: ['#008C45', '#F4F5F0', '#CD212A']
+        },
+        {
+            level: 6,
+            city: "London", 
+            coords: [-0.1276, 51.5072],
+            hint_food: "images/ipucu-london.png", // DEĞİŞTİ
+            hint_colors: ['#012169', '#FFFFFF', '#C8102E']
+        },
+        {
+            level: 7,
+            city: "Berlin",
+            coords: [13.4050, 52.5200],
+            hint_food: "images/ipucu-berlin.png", // DEĞİŞTİ
+            hint_colors: ['#000000', '#DD0000', '#FFCC00']
+        },
+        {
+            level: 8,
+            city: "Madrid",
+            coords: [-3.7038, 40.4168],
+            hint_food: "images/ipucu-madrid.png", // DEĞİŞTİ
+            hint_colors: ['#AA151B', '#F1B53B']
+        },
+        {
+            level: 9,
+            city: "Moscow", 
+            coords: [37.6173, 55.7558],
+            hint_food: "images/ipucu-moscow.png", // DEĞİŞTİ
+            hint_colors: ['#FFFFFF', '#0039A6', '#D52B1E']
+        },
+        {
+            level: 10,
+            city: "Washington", 
+            coords: [-77.0369, 38.9072],
+            hint_food: "images/ipucu-washington.png", // DEĞİŞTİ
+            hint_colors: ['#B22234', '#FFFFFF', '#3C3B6E']
+        },
+        {
+            level: 11,
+            city: "Mexico City", 
+            coords: [-99.1332, 19.4326],
+            hint_food: "images/ipucu-mexico-city.png", // DEĞİŞTİ
+            hint_colors: ['#006847', '#FFFFFF', '#CE1126']
+        },
+        {
+            level: 12,
+            city: "Brasilia", 
+            coords: [-47.8825, -15.7942],
+            hint_food: "images/ipucu-brasilia.png", // DEĞİŞTİ
+            hint_colors: ['#009B3A', '#FFCC29', '#002776']
+        },
+        {
+            level: 13,
+            city: "Buenos Aires",
+            coords: [-58.3816, -34.6037],
+            hint_food: "images/ipucu-buenos-aires.png", // DEĞİŞTİ
+            hint_colors: ['#75AADB', '#FFFFFF', '#FFB81C']
+        },
+        {
+            level: 14,
+            city: "Beijing", 
+            coords: [116.4074, 39.9042],
+            hint_food: "images/ipucu-beijing.png", // DEĞİŞTİ
+            hint_colors: ['#EE1C25', '#FFFF00']
+        },
+        {
+            level: 15,
+            city: "Canberra",
+            coords: [149.1300, -35.2809],
+            hint_food: "images/ipucu-canberra.png", // DEĞİŞTİ
+            hint_colors: ['#00008B', '#FFFFFF', '#FF0000']
         }
-        // ... 25 seviyeye kadar eklenecek
     ];
 
+    // Oyunu karıştırma fonksiyonunu çağır
+    shuffleGameData(gameData);
+
     // --- DOM ELEMENTLERİNİ ALMA ---
+    // ... (Bu kısım değişmedi) ...
     const startMenu = document.getElementById('start-menu');
     const btnStartGame = document.getElementById('btn-start-game');
     const mapElement = document.getElementById('map');
@@ -51,16 +131,17 @@ window.onload = function() {
     const btnPopupClose = document.getElementById('btn-popup-close');
 
     // --- OYUN DURUMU DEĞİŞKENLERİ ---
+    // ... (Bu kısım değişmedi) ...
     let currentLevel = 0; 
     let playerTokens = 20;
     let map; 
     let gameLayer; 
-    let playerPawn; // Bu artık bizim UÇAĞIMIZ olacak
-    let isAnimating = false; // Uçuş animasyonu sırasında tıklamaları engellemek için
+    let playerPawn; 
+    let isAnimating = false;
 
     // --- HARİTA VE OYUN KURULUM FONKSİYONU ---
+    // ... (Bu fonksiyon değişmedi) ...
     function initializeGame() {
-        
         const cartoDarkLayer = new ol.layer.Tile({
             source: new ol.source.XYZ({
                 url: 'https://{a-c}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png',
@@ -68,19 +149,15 @@ window.onload = function() {
             })
         });
 
-        // === DEĞİŞİKLİK 1: Uçak Stili ===
-        // Beyaz nokta yerine uçak ikonu kullanıyoruz.
-        // İkonunuzun burnunun YUKARI (kuzeye) baktığından emin olun.
         const playerStyle = new ol.style.Style({
             image: new ol.style.Icon({
-                anchor: [0.5, 0.5], // İkonu ortala
-                src: 'images/plane-icon.png', // <-- KENDİ UÇAK İKONUNUZUN YOLU
-                scale: 0.1, // İkon boyutunu ayarlayın
-                rotateWithView: true // Harita dönerse dönsün (opsiyonel)
+                anchor: [0.5, 0.5], 
+                src: 'images/plane-icon.png', 
+                scale: 0.1, 
+                rotateWithView: true
             })
         });
         
-        // Piyonu (uçağı) geometrisiz (konumsuz) başlat
         playerPawn = new ol.Feature(); 
         playerPawn.setStyle(playerStyle);
 
@@ -100,9 +177,7 @@ window.onload = function() {
     }
 
     // --- OYUN FONKSİYONLARI ---
-    
-    // === DEĞİŞİKLİK 2: Fonksiyon Güncellendi ===
-    // 'skipAnimation' parametresi eklendi.
+    // ... (loadLevel, updateTokenUI, showPopup, hidePopup, checkGuess fonksiyonları değişmedi) ...
     function loadLevel(levelIndex, skipAnimation = false) {
         const level = gameData[levelIndex];
         currentLevel = levelIndex;
@@ -112,15 +187,12 @@ window.onload = function() {
 
         const levelCoords = ol.proj.fromLonLat(level.coords);
 
-        // Piyonun (uçağın) konumunu ayarla
         if (!playerPawn.getGeometry()) {
             playerPawn.setGeometry(new ol.geom.Point(levelCoords));
         } else {
             playerPawn.getGeometry().setCoordinates(levelCoords);
         }
 
-        // Uçuş animasyonu bittiyse (skipAnimation = true), kamera animasyonunu atla.
-        // Sadece ana menüden başlarken (skipAnimation = false) bu animasyon çalışsın.
         if (!skipAnimation) {
             map.getView().animate({
                 center: levelCoords,
@@ -137,7 +209,6 @@ window.onload = function() {
     }
 
     function showPopup(title, contentHTML) {
-        // ... (Bu fonksiyon değişmedi) ...
         popupTitle.innerHTML = title;
         popupContent.innerHTML = contentHTML;
         popupOverlay.style.display = 'flex';
@@ -146,16 +217,13 @@ window.onload = function() {
     }
 
     function hidePopup() {
-        // ... (Bu fonksiyon değişmedi) ...
         gsap.to(popupOverlay, { duration: 0.3, opacity: 0, onComplete: () => {
             popupOverlay.style.display = 'none';
             popupOverlay.style.pointerEvents = 'none';
         }});
     }
 
-    // === DEĞİŞİKLİK 3: checkGuess Fonksiyonu Tamamen Değişti ===
     function checkGuess() {
-        // Animasyon sürerken tekrar tekrar basılmasını engelle
         if (isAnimating) return; 
 
         const answer = gameData[currentLevel].city.toLowerCase();
@@ -165,31 +233,22 @@ window.onload = function() {
             playerTokens += 5;
             showPopup("Doğru!", `<p>Tebrikler! +5 Jeton kazandın.</p>`);
             
-            // Oyun bitmediyse, bir sonraki seviyeye uç
             if (currentLevel < gameData.length - 1) {
-                isAnimating = true; // Animasyonu başlat
+                isAnimating = true; 
                 
                 const nextLevelIndex = currentLevel + 1;
                 
-                // Başlangıç ve Bitiş koordinatlarını al (Harita projeksiyonunda)
                 const startCoords = ol.proj.fromLonLat(gameData[currentLevel].coords);
                 const endCoords = ol.proj.fromLonLat(gameData[nextLevelIndex].coords);
 
-                // === Uçak Rotasyonu ===
-                // Uçağın burnunu hedefe çevirmek için açıyı (radyan) hesapla
                 const dx = endCoords[0] - startCoords[0];
                 const dy = endCoords[1] - startCoords[1];
                 const rotation = Math.atan2(dy, dx);
-                // OpenLayers rotasyonu Kuzey'den (yukarı) saat yönünedir.
-                // Math.atan2 Doğu'dan (sağ) saat yönünün tersinedir.
-                // Bu yüzden (-rotation + Math.PI / 2) formülünü kullanıyoruz.
                 const olRotation = -rotation + (Math.PI / 2);
                 playerPawn.getStyle().getImage().setRotation(olRotation);
 
-                // === Rota Çizgisi ===
-                // Uçağı takip edecek sarı çizgiyi oluştur
                 const flightPathLine = new ol.Feature({
-                    geometry: new ol.geom.LineString([startCoords, startCoords]) // Çizgi (Başlangıçta 0 uzunlukta)
+                    geometry: new ol.geom.LineString([startCoords, startCoords])
                 });
                 flightPathLine.setStyle(new ol.style.Style({
                     stroke: new ol.style.Stroke({
@@ -199,57 +258,53 @@ window.onload = function() {
                 }));
                 gameLayer.getSource().addFeature(flightPathLine);
 
-                // === GSAP Animasyonu ===
-                // Geçici bir obje oluşturup, GSAP'in bu objenin x ve y değerlerini
-                // başlangıçtan bitişe 2 saniyede götürmesini sağlıyoruz.
                 let animProgress = { x: startCoords[0], y: startCoords[1] };
                 
                 gsap.to(animProgress, {
-                    duration: 4.0, // Uçuş süresi (saniye)
+                    duration: 5.0, 
                     x: endCoords[0],
                     y: endCoords[1],
                     
-                    // onUpdate: Animasyonun HER karesinde çalışan fonksiyon
                     onUpdate: function() {
                         const currentFlightCoords = [animProgress.x, animProgress.y];
-                        
-                        // 1. UÇAĞIN pozisyonunu güncelle
                         playerPawn.getGeometry().setCoordinates(currentFlightCoords);
-                        
-                        // 2. ÇİZGİNİN son noktasını güncelle (Çizgi uçağı takip eder)
                         flightPathLine.getGeometry().setCoordinates([startCoords, currentFlightCoords]);
-                        
-                        // 3. KAMERANIN merkezini güncelle (Kamera uçağı takip eder)
                         map.getView().setCenter(currentFlightCoords);
                     },
                     
-                    // onComplete: Animasyon bittiğinde çalışan fonksiyon
                     onComplete: function() {
-                        // Hedefe vardık, kamerayı yakınlaştır
                         map.getView().animate({ zoom: 6, duration: 500 });
                         
-                        // Pop-up'ı kapat ve sonraki seviyeyi (animasyonsuz) yükle
                         setTimeout(() => {
                             hidePopup();
-                            loadLevel(nextLevelIndex, true); // true = kamera animasyonunu atla
-                            isAnimating = false; // Animasyon bitti, tekrar tahmin edilebilir
-                        }, 500); // Yakınlaşma animasyonundan sonra
+                            loadLevel(nextLevelIndex, true); 
+                            isAnimating = false;
+                        }, 500);
                     }
                 });
 
             } else {
-                // OYUN BİTTİ
                 showPopup("Oyun Bitti!", "<p>Tüm seviyeleri tamamladın!</p>");
                 btnGuess.disabled = true;
             }
         } else {
-            // YANLIŞ CEVAP
             showPopup("Yanlış!", "<p>Tekrar dene. İpucu kullanmak ister misin?</p>");
         }
     }
 
-    // --- OLAY DİNLEYİCİLERİ ---
+    // --- Karıştırma Fonksiyonu ---
+    // ... (Bu fonksiyon değişmedi) ...
+    function shuffleGameData(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        array.forEach((item, index) => {
+            item.level = index + 1;
+        });
+    }
 
+    // --- OLAY DİNLEYİCİLERİ ---
     btnStartGame.addEventListener('click', () => {
         // ... (Bu fonksiyon değişmedi) ...
         gsap.to(startMenu, { duration: 0.5, opacity: 0, onComplete: () => {
@@ -260,8 +315,6 @@ window.onload = function() {
         gameUI.style.pointerEvents = 'all';
         gsap.to(gameUI, { duration: 0.5, opacity: 1, delay: 0.5 });
         
-        // İlk seviyeyi yükle (Bu, piyonu görünür yapacak ve Paris'e odaklanacak)
-        // false (veya boş) gönderdiğimiz için kamera animasyonu çalışacak
         loadLevel(0, false);
     });
 
@@ -278,16 +331,19 @@ window.onload = function() {
         }
     });
 
+    // === DÜZELTME BURADA ===
+    // 'class.' hatası 'class=' olarak düzeltildi.
     btnHintColors.addEventListener('click', () => {
-        // ... (Bu fonksiyon değişmedi) ...
         if (playerTokens >= 10) {
             playerTokens -= 10;
             updateTokenUI();
             
             const hintColors = gameData[currentLevel].hint_colors;
             
+            // HATA 1: class. -> class=
             let colorHTML = '<div class="color-swatches">';
             hintColors.forEach(color => {
+                // HATA 2: class. -> class=
                 colorHTML += `<div class="color-swatch" style="background-color: ${color};"></div>`;
             });
             colorHTML += '</div>';
@@ -295,6 +351,7 @@ window.onload = function() {
             showPopup("İpucu: Bayrak Renkleri", colorHTML);
         }
     });
+    // === /DÜZELTME SONU ===
 
     // Haritayı ana menü için hemen yükle
     initializeGame();

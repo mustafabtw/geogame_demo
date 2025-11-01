@@ -16,13 +16,14 @@
 <body>
 
     <div id="map"></div>
+    <div id="brightness-overlay"></div>
 
     <div id="start-menu" class="overlay-screen">
         <h1 class="game-title">GeoGame: Where are we?</h1>
         <p class="slogan">Guess the world's capitals, plot your route.</p>
         <div class="menu-buttons">
             <button id="btn-start-game">Start</button>
-            <button id="btn-settings" disabled>Settings</button>
+            <button id="btn-settings">Settings</button>
         </div>
     </div>
 
@@ -48,6 +49,38 @@
             <button id="btn-popup-close">Kapat</button>
         </div>
     </div>
+
+    <div id="settings-overlay" class="overlay-screen hidden">
+    <div id="settings-box">
+        <button id="btn-settings-close" class="btn-close-popup">X</button>
+        <h2>Ayarlar</h2>
+        
+        <div class="settings-section">
+            <label>Harita Tipi</label>
+            <div class="button-group">
+                <button class="map-type-btn active" data-map="dark">Koyu</button>
+                <button class="map-type-btn" data-map="light">Açık</button>
+                <button class="map-type-btn" data-map="satellite">Uydu</button>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <label for="slider-brightness">Parlaklık</label>
+            <input type="range" id="slider-brightness" min="0" max="1" value="1" step="0.1">
+        </div>
+
+        <div class="settings-section">
+            <label for="slider-music">Müzik Sesi</label>
+            <input type="range" id="slider-music" min="0" max="100" value="75" step="1">
+        </div>
+
+        <div class="settings-section">
+            <label for="slider-effects">Efekt Sesi</label>
+            <input type="range" id="slider-effects" min="0" max="100" value="90" step="1">
+        </div>
+
+    </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/ol/dist/ol.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>

@@ -371,3 +371,82 @@ input[type="range"]::-moz-range-thumb {
     border: 3px solid #1a1a1a;
     box-shadow: 0 0 5px rgba(0,0,0,0.5);
 }
+
+/* === YENİ: Başarı Pop-up Bilgi Kartı === */
+/* === GÜNCELLENMİŞ: Başarı Pop-up Bilgi Kartı === */
+
+#popup-box {
+    max-width: 500px; /* Biraz daha küçülttük */
+    max-height: 80vh; 
+    overflow-y: auto; 
+    text-align: left; 
+}
+
+.info-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    gap: 10px; /* Boşluğu azalttık */
+}
+
+.info-card .info-flag {
+    width: 100px; /* Bayrağı küçülttük */
+    height: auto;
+    border: 3px solid #f0f0f0;
+    border-radius: 5px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+
+.info-card h3 {
+    font-size: 1.5rem; /* Başlığı küçülttük */
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+}
+
+/* Başarı kartındaki Jeton yazısını vurgula */
+.info-card .info-tokens {
+    font-size: 1.25rem; /* 1.1'den büyütüldü */
+    font-weight: 700;
+    color: #FFDD70; /* Daha parlak bir altın */
+    margin: 0;
+    margin-bottom: 10px;
+    text-shadow: 0 0 8px rgba(255, 221, 112, 0.5); /* Işıma efekti */
+}
+
+/* === DEĞİŞİKLİK: h4 BAŞLIKLARI VE ÇİZGİLERİ KALDIRILDI === */
+.info-card h4 {
+    display: none; /* Başlıkları tamamen gizle */
+}
+
+/* Bilgi paragrafları */
+.info-card .info-text {
+    font-size: 0.9rem; /* Yazıyı küçülttük */
+    color: #ccc;
+    line-height: 1.5;
+    margin: 0 0 5px 0; /* Paragraflar arası 5px boşluk */
+    text-align: center; /* Bilgileri ortala */
+    width: 100%;
+}
+
+/* === YENİ: Yemek İpucu Pop-up Stili === */
+.hint-food-popup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px; /* Resim ve yazı arası boşluk */
+}
+
+.hint-food-popup img {
+    max-width: 100%;
+    max-height: 300px; /* Pop-up'tan taşmasın */
+    border-radius: 5px;
+    border: 2px solid #555;
+}
+
+.hint-food-popup p {
+    font-size: 1.5rem; /* İsmi büyük ve net yapalım */
+    font-weight: 700;
+    color: #FFDD70; /* Parlak altın */
+    margin: 0;
+}

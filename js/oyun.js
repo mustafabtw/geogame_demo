@@ -263,6 +263,7 @@ window.onload = function() {
         
         if (isVictory) {
             sfxCorrect.play();
+            launchConfetti(); 
             summaryTitle.textContent = "MISSION COMPLETE!";
             summaryTitle.className = "success"; 
         } else {
@@ -521,5 +522,29 @@ window.onload = function() {
     btnMainMenu.addEventListener('click', () => { playClickSound(); window.location.reload(); });
 
     initializeGame();
+
+    // --- BONUS: KONFETİ EFEKTİ FONKSİYONU ---
+    function launchConfetti() {
+        var duration = 3 * 1000; // 3 saniye sürsün
+        var animationEnd = Date.now() + duration;
+        var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 4000 };
+
+        function randomInRange(min, max) {
+          return Math.random() * (max - min) + min;
+        }
+
+        var interval = setInterval(function() {
+          var timeLeft = animationEnd - Date.now();
+
+          if (timeLeft <= 0) {
+            return clearInterval(interval);
+          }
+
+          var particleCount = 50 * (timeLeft / duration);
+          // Ekranın rastgele yerlerinden konfeti fırlat
+          confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+          confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+        }, 250);
+    }
 
 }; // window.onload sonu

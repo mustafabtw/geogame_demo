@@ -1,6 +1,6 @@
 window.onload = function() {
 
-    // === TÜM DÜNYA BAŞKENTLERİ ===
+    // === TÜM DÜNYA BAŞKENTLERİ (Otomatik Tamamlama İçin) ===
     const allCapitals = [
         "Abu Dhabi", "Abuja", "Accra", "Addis Ababa", "Algiers", "Amman", "Amsterdam", "Andorra la Vella", "Ankara", "Antananarivo", "Apia", "Ashgabat", "Asmara", "Asuncion", "Athens", "Baghdad", "Baku", "Bamako", "Bandar Seri Begawan", "Bangkok", "Bangui", "Banjul", "Basseterre", "Beijing", "Beirut", "Belgrade", "Belmopan", "Berlin", "Bern", "Bishkek", "Bissau", "Bogota", "Brasilia", "Bratislava", "Brazzaville", "Bridgetown", "Brussels", "Bucharest", "Budapest", "Buenos Aires", "Bujumbura", "Cairo", "Canberra", "Caracas", "Castries", "Chisinau", "Conakry", "Copenhagen", "Dakar", "Damascus", "Dhaka", "Dili", "Djibouti", "Dodoma", "Doha", "Dublin", "Dushanbe", "Freetown", "Funafuti", "Gaborone", "Georgetown", "Gitega", "Guatemala City", "Hanoi", "Harare", "Havana", "Helsinki", "Honiara", "Islamabad", "Jakarta", "Jerusalem", "Juba", "Kabul", "Kampala", "Kathmandu", "Khartoum", "Kiev", "Kigali", "Kingston", "Kinshasa", "Kuala Lumpur", "Kuwait City", "Libreville", "Lilongwe", "Lima", "Lisbon", "Ljubljana", "Lome", "London", "Luanda", "Lusaka", "Luxembourg", "Madrid", "Majuro", "Malabo", "Male", "Managua", "Manama", "Manila", "Maputo", "Maseru", "Mbabane", "Melekeok", "Mexico City", "Minsk", "Mogadishu", "Monaco", "Monrovia", "Montevideo", "Moroni", "Moscow", "Muscat", "Nairobi", "Nassau", "Naypyidaw", "N'Djamena", "New Delhi", "Ngerulmud", "Niamey", "Nicosia", "Nouakchott", "Nuku'alofa", "Nur-Sultan", "Oslo", "Ottawa", "Palikir", "Panama City", "Paramaribo", "Paris", "Phnom Penh", "Podgorica", "Port Louis", "Port Moresby", "Port of Spain", "Port-au-Prince", "Porto-Novo", "Prague", "Praia", "Pretoria", "Pristina", "Pyongyang", "Quito", "Rabat", "Reykjavik", "Riga", "Riyadh", "Rome", "Roseau", "Saint George's", "Saint John's", "San Jose", "San Marino", "San Salvador", "Sana'a", "Santiago", "Santo Domingo", "Sao Tome", "Sarajevo", "Seoul", "Singapore", "Skopje", "Sofia", "South Tarawa", "Sri Jayawardenepura Kotte", "Stockholm", "Sucre", "Suva", "Taipei", "Tallinn", "Tashkent", "Tbilisi", "Tegucigalpa", "Tehran", "Thimphu", "Tirana", "Tokyo", "Tripoli", "Tunis", "Ulaanbaatar", "Vaduz", "Valletta", "Victoria", "Vienna", "Vientiane", "Vilnius", "Warsaw", "Washington", "Wellington", "Windhoek", "Yamoussoukro", "Yaounde", "Yerevan", "Zagreb"
     ];
@@ -33,7 +33,6 @@ window.onload = function() {
         { city: "Bangkok", city_tr: "Bangkok", country: "Thailand", coords: [100.5018, 13.7563], hint_food: "images/ipucu-bangkok.png", hint_food_name: "Pad Thai", hint_colors: ['#A51931', '#FFFFFF', '#2D2A4A'], flag_img: "images/flag-tayland.png", info_history: "Known for the Grand Palace and Wat Arun temple. Its full name is one of the longest in the world.", info_cuisine: "World-famous street food. Home of 'Pad Thai' (stir-fried noodles) and 'Tom Yum Goong' (spicy shrimp soup)." },
         { city: "Athens", city_tr: "Atina", country: "Greece", coords: [23.7275, 37.9838], hint_food: "images/ipucu-athens.png", hint_food_name: "Greek Salad", hint_colors: ['#0D5EAF', '#FFFFFF'], flag_img: "images/flag-yunanistan.png", info_history: "The cradle of Western civilization and democracy. Home to the Acropolis and the Parthenon.", info_cuisine: "Known for 'Moussaka' (eggplant bake), 'Souvlaki' (grilled meat skewers), and 'Choriatiki' (Greek salad)." }
     ];
-    // === /VERİTABANI SONU ===
    
     // --- DOM ELEMENTLERİNİ ALMA ---
     const startMenu = document.getElementById('start-menu');
@@ -86,6 +85,7 @@ window.onload = function() {
     let playerPawn;
     let isAnimating = false;
     let mainMapLayer;
+    let summaryChart = null;
     
     // İSTATİSTİK VE DURUM DEĞİŞKENLERİ
     let playerLives = 3;
@@ -94,7 +94,7 @@ window.onload = function() {
     let totalScore = 0;
     let hintsUsed = 0;
     let wrongAnswers = [];
-    let currentFocus = -1; // Otomatik tamamlama için seçim takibi
+    let currentFocus = -1;
    
     // Harita Kaynakları
     const cartoDarkSource = new ol.source.XYZ({ url: 'https://{a-c}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png', attributions: '© OpenStreetMap contributors, © CARTO' });
@@ -180,10 +180,10 @@ window.onload = function() {
         }});
     }
 
-    // --- OTOMATİK TAMAMLAMA FONKSİYONLARI (Klavye Destekli) ---
+    // --- OTOMATİK TAMAMLAMA FONKSİYONLARI ---
     function showSuggestions(inputVal) {
         suggestionsList.innerHTML = ''; 
-        currentFocus = -1; // Liste her yenilendiğinde seçimi sıfırla
+        currentFocus = -1; 
         if (inputVal.length < 1) {
             suggestionsList.style.display = 'none';
             return;
@@ -198,7 +198,7 @@ window.onload = function() {
                 li.addEventListener('click', () => {
                     guessInput.value = capital;
                     suggestionsList.style.display = 'none';
-                    checkGuess(); // Tıklanınca direkt tahmin et
+                    checkGuess(); 
                 });
                 suggestionsList.appendChild(li);
             });
@@ -214,7 +214,6 @@ window.onload = function() {
         if (currentFocus >= items.length) currentFocus = 0;
         if (currentFocus < 0) currentFocus = (items.length - 1);
         items[currentFocus].classList.add("suggestion-active");
-        // Seçili öğeyi görünür alana kaydır
         items[currentFocus].scrollIntoView({ block: "nearest" });
     }
 
@@ -292,11 +291,59 @@ window.onload = function() {
             wrongAnswersList.appendChild(li);
         }
 
+        // --- CHART.JS GRAFİK GÜNCELLEMESİ ---
+        const ctx = document.getElementById('summaryChart').getContext('2d');
+        if (summaryChart) { summaryChart.destroy(); }
+        
+        // YENİ MATEMATİK:
+        // Eğer zafer varsa, şu anki seviyeyi de doğru bildi demektir (currentLevel + 1).
+        // Eğer zafer yoksa, şu anki seviyeyi geçemedi demektir, sadece öncekiler sayılır (currentLevel).
+        const correctCount = isVictory ? currentLevel + 1 : currentLevel;
+        const wrongCount = wrongAnswers.length;
+
+        summaryChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Correct Guesses', 'Wrong Attempts'],
+                datasets: [{
+                    data: [correctCount, wrongCount],
+                    backgroundColor: ['#2ECC40', '#FF4136'],
+                    borderColor: '#1a1a1a',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: '#f0f0f0', font: { family: "'Inter', sans-serif", size: 14 } }
+                    }
+                }
+            }
+        });
+
         summaryScreen.style.display = 'flex';
         summaryScreen.style.pointerEvents = 'all';
         gsap.to(summaryScreen, { duration: 0.5, opacity: 1 });
         gameUI.style.pointerEvents = 'none';
         gsap.to(gameUI, { duration: 0.5, opacity: 0 });
+    }
+
+    // --- BONUS: KONFETİ EFEKTİ ---
+    function launchConfetti() {
+        var duration = 3 * 1000;
+        var animationEnd = Date.now() + duration;
+        var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 4000 };
+        function randomInRange(min, max) { return Math.random() * (max - min) + min; }
+        var interval = setInterval(function() {
+          var timeLeft = animationEnd - Date.now();
+          if (timeLeft <= 0) { return clearInterval(interval); }
+          var particleCount = 50 * (timeLeft / duration);
+          confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+          confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+        }, 250);
     }
 
     function checkGuess() {
@@ -433,7 +480,6 @@ window.onload = function() {
 
     btnGuess.addEventListener('click', checkGuess);
     
-    // YENİ INPUT KEYDOWN (Klavye Gezinmesi için)
     guessInput.addEventListener('keydown', (e) => {
         let items = suggestionsList.getElementsByTagName('li');
         if (e.key === 'ArrowDown') {
@@ -443,14 +489,12 @@ window.onload = function() {
             currentFocus--;
             addActive(items);
         } else if (e.key === 'Enter') {
-            // Eğer liste açıksa ve bir seçim yapılmışsa onu onayla
             if (suggestionsList.style.display === 'block' && currentFocus > -1) {
                 e.preventDefault();
                 if (items[currentFocus]) {
-                    items[currentFocus].click(); // Tıklama simülasyonu
+                    items[currentFocus].click(); 
                 }
             } else {
-                // Seçim yoksa normal tahmin kontrolü yap
                 checkGuess();
             }
         }
@@ -522,29 +566,5 @@ window.onload = function() {
     btnMainMenu.addEventListener('click', () => { playClickSound(); window.location.reload(); });
 
     initializeGame();
-
-    // --- BONUS: KONFETİ EFEKTİ FONKSİYONU ---
-    function launchConfetti() {
-        var duration = 3 * 1000; // 3 saniye sürsün
-        var animationEnd = Date.now() + duration;
-        var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 4000 };
-
-        function randomInRange(min, max) {
-          return Math.random() * (max - min) + min;
-        }
-
-        var interval = setInterval(function() {
-          var timeLeft = animationEnd - Date.now();
-
-          if (timeLeft <= 0) {
-            return clearInterval(interval);
-          }
-
-          var particleCount = 50 * (timeLeft / duration);
-          // Ekranın rastgele yerlerinden konfeti fırlat
-          confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
-          confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
-        }, 250);
-    }
 
 }; // window.onload sonu

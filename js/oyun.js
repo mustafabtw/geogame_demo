@@ -291,16 +291,20 @@ window.onload = function() {
             wrongAnswersList.appendChild(li);
         }
 
-        // --- CHART.JS GRAFİK GÜNCELLEMESİ ---
+        // --- KRİTİK DÜZELTME BURADA ---
+        // Önce ekranı görünür (ama şeffaf) yapıyoruz ki Chart.js boyut alabilsin.
+        summaryScreen.style.opacity = 0;
+        summaryScreen.style.display = 'flex';
+        summaryScreen.style.pointerEvents = 'all';
+
+        // --- CHART.JS GRAFİK OLUŞTURMA ---
         const ctx = document.getElementById('summaryChart').getContext('2d');
         if (summaryChart) { summaryChart.destroy(); }
         
-        // YENİ MATEMATİK:
-        // Eğer zafer varsa, şu anki seviyeyi de doğru bildi demektir (currentLevel + 1).
-        // Eğer zafer yoksa, şu anki seviyeyi geçemedi demektir, sadece öncekiler sayılır (currentLevel).
         const correctCount = isVictory ? currentLevel + 1 : currentLevel;
         const wrongCount = wrongAnswers.length;
 
+        // Chart artık kapsayıcısının boyutlarını okuyabilir
         summaryChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
@@ -324,8 +328,7 @@ window.onload = function() {
             }
         });
 
-        summaryScreen.style.display = 'flex';
-        summaryScreen.style.pointerEvents = 'all';
+        // Ekran zaten 'flex' yapıldı, şimdi sadece animasyonla opaklığını açıyoruz
         gsap.to(summaryScreen, { duration: 0.5, opacity: 1 });
         gameUI.style.pointerEvents = 'none';
         gsap.to(gameUI, { duration: 0.5, opacity: 0 });

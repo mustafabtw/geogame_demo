@@ -1,91 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GeoGame: Where are we?</title>
-
-    <link rel="icon" type="image/png" href="images/plane-icon.png">
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol/ol.css">
-   
-    <link rel="stylesheet" href="css/still.css?v=9.0">
-   
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoGame: Where are we?</title>
+    <link rel="icon" type="image/png" href="images/plane-icon.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol/ol.css">
+    <link rel="stylesheet" href="css/still.css?v=11.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <div id="map"></div>
-    <div id="brightness-overlay"></div>
+    <div id="map"></div>
+    <div id="brightness-overlay"></div>
 
-    <div id="start-menu" class="overlay-screen">
-        <h1 class="game-title">GeoGame: Where are we?</h1>
-        <p class="slogan">Guess the world's capitals, draw your route.</p>
-        <div class="menu-buttons">
-            <button id="btn-start-game">START</button>
-            <button id="btn-settings">SETTINGS</button>
-        </div>
-    </div>
+    <div id="start-menu" class="overlay-screen">
+        <h1 class="game-title">GeoGame: Where are we?</h1>
+        <p class="slogan">Guess the world's capitals, draw your route.</p>
+        <div class="menu-buttons">
+            <button id="btn-start-game">START</button>
+            <button id="btn-settings">SETTINGS</button>
+        </div>
+    </div>
 
-    <div id="game-ui" class="hidden">
-        <div class="status-bar">
-                        <span>Level: <span id="level-count">1</span> / <span id="total-levels">15</span></span>
-            <span>Token: <span id="token-count">20</span></span>
-        </div>
-        <div class="guess-area">
-            <input type="text" id="guess-input" placeholder="Enter your capital guess...">
-            <button id="btn-guess">Guess</button>
-        </div>
-        <div class="hint-buttons">
-            <button id="btn-hint-food" class="hint-btn">Hint: Food (10 Tokens)</button>
-            <button id="btn-hint-colors" class="hint-btn">Hint: Flag Colors (10 Tokens)</button>
-        </div>
-    </div>
-
-    <div id="popup-overlay" class="hidden">
-        <div id="popup-box">
-            <h2 id="popup-title">Hint</h2>
-            <div id="popup-content"></div>
-            <button id="btn-popup-close">Close</button>
-        </div>
-    </div>
-
-        <div id="settings-overlay" class="overlay-screen hidden">
-        <div id="settings-box">
-            <button id="btn-settings-close" class="btn-close-popup">X</button>
-            <h2>Settings</h2>
-           
-<div class="settings-section">
-                <label>Map Type</label>
-                <div class="button-group">
-                    <button class="map-type-btn" data-map="dark">Dark</button>
-                    <button class="map-type-btn" data-map="light">Light</button>
-                    <button class="map-type-btn active" data-map="satellite">Satellite</button>
-                </div>
-            </div>
-
-            <div class="settings-section">
-                <label for="slider-brightness">Brightness</label>
-                <input type="range" id="slider-brightness" min="0" max="1" value="1" step="0.1">
-            </div>
-
-                        <div class="settings-section">
-                <label for="slider-music">Music Volume</label>
-                <input type="range" id="slider-music" min="0" max="100" value="75" step="1">
+    <div id="game-ui" class="hidden">
+        <div class="status-bar">
+            <div class="status-item">
+                Lives: <span id="life-hearts">💛💛💛</span>
             </div>
-        
-            <div class="settings-section">
-                <label for="slider-effects">Effect Volume</label>
-                <input type="range" id="slider-effects" min="0" max="100" value="90" step="1">
-            </div>
+            <div class="status-item">
+                Time: <span id="timer-count">02:00</span>
+            </div>
+            <div class="status-item">
+                Level: <span id="level-count">1</span> / <span id="total-levels">25</span>
+            </div>
+            <div class="status-item">
+                Token: <span id="token-count">20</span>
+            </div>
+        </div>
+        
+        <div class="guess-area">
+            <div class="input-wrapper">
+                <input type="text" id="guess-input" placeholder="Enter your capital guess..." autocomplete="off">
+                <ul id="suggestions-list" class="hidden"></ul>
+            </div>
+            <button id="btn-guess">Guess</button>
+        </div>
 
-        </div>
-    </div>
-        <script src="https://cdn.jsdelivr.net/npm/ol/dist/ol.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
-   
-    <script src="js/oyun.js?v=9.2"></script>
+        <div class="hint-buttons">
+            <button id="btn-hint-food" class="hint-btn">Hint: Food (10 Tokens)</button>
+            <button id="btn-hint-colors" class="hint-btn">Hint: Flag Colors (10 Tokens)</button>
+        </div>
+    </div>
+
+    <div id="popup-overlay" class="hidden">
+        <div id="popup-box">
+            <h2 id="popup-title">Hint</h2>
+            <div id="popup-content"></div>
+            <button id="btn-popup-close">Close</button>
+        </div>
+    </div>
+
+    <div id="summary-screen" class="overlay-screen hidden">
+        <div id="summary-box">
+            <h1 id="summary-title">GAME OVER</h1>
+            <p id="summary-reason" class="slogan">Reason...</p>
+            <div class="summary-stats">
+                <div class="stat-row"><span>Final Score:</span> <span id="sum-score" class="highlight-stat">0</span></div>
+                <div class="stat-row"><span>Time Left:</span> <span id="sum-time">00:00</span></div>
+                <div class="stat-row"><span>Hints Used:</span> <span id="sum-hints">0</span></div>
+            </div>
+            <div id="wrong-answers-area">
+                <h3>Mistakes made:</h3>
+                <ul id="wrong-answers-list"></ul>
+            </div>
+            <div class="menu-buttons">
+                <button id="btn-restart">Play Again</button>
+                <button id="btn-main-menu">Main Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="settings-overlay" class="overlay-screen hidden">
+        <div id="settings-box">
+            <button id="btn-settings-close" class="btn-close-popup">X</button>
+            <h2>Settings</h2>
+            <div class="settings-section">
+                <label>Map Type</label>
+                <div class="button-group">
+                    <button class="map-type-btn" data-map="dark">Dark</button>
+                    <button class="map-type-btn" data-map="light">Light</button>
+                    <button class="map-type-btn active" data-map="satellite">Satellite</button>
+                </div>
+            </div>
+            <div class="settings-section">
+                <label for="slider-brightness">Brightness</label>
+                <input type="range" id="slider-brightness" min="0" max="1" value="1" step="0.1">
+            </div>
+            <div class="settings-section">
+                <label for="slider-music">Music Volume</label>
+                <input type="range" id="slider-music" min="0" max="100" value="75" step="1">
+            </div>
+            <div class="settings-section">
+                <label for="slider-effects">Effect Volume</label>
+                <input type="range" id="slider-effects" min="0" max="100" value="90" step="1">
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/ol/dist/ol.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+    <script src="js/oyun.js?v=11.0"></script>
 </body>
 </html>

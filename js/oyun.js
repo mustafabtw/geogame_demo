@@ -291,44 +291,45 @@ window.onload = function() {
             wrongAnswersList.appendChild(li);
         }
 
-        // --- KRİTİK DÜZELTME BURADA ---
-        // Önce ekranı görünür (ama şeffaf) yapıyoruz ki Chart.js boyut alabilsin.
+        // KRİTİK DÜZELTME: Chart oluşumunu GECİKTİRİYORUZ.
+        // Önce ekranı görünür yapıyoruz:
         summaryScreen.style.opacity = 0;
         summaryScreen.style.display = 'flex';
         summaryScreen.style.pointerEvents = 'all';
 
-        // --- CHART.JS GRAFİK OLUŞTURMA ---
-        const ctx = document.getElementById('summaryChart').getContext('2d');
-        if (summaryChart) { summaryChart.destroy(); }
-        
-        const correctCount = isVictory ? currentLevel + 1 : currentLevel;
-        const wrongCount = wrongAnswers.length;
+        // 50ms gecikme ile chart'ı çizdiriyoruz ki tarayıcı boyutları algılasın:
+        setTimeout(() => {
+             const ctx = document.getElementById('summaryChart').getContext('2d');
+             if (summaryChart) { summaryChart.destroy(); }
+             
+             const correctCount = isVictory ? currentLevel + 1 : currentLevel;
+             const wrongCount = wrongAnswers.length;
 
-        // Chart artık kapsayıcısının boyutlarını okuyabilir
-        summaryChart = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Correct Guesses', 'Wrong Attempts'],
-                datasets: [{
-                    data: [correctCount, wrongCount],
-                    backgroundColor: ['#2ECC40', '#FF4136'],
-                    borderColor: '#1a1a1a',
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: { color: '#f0f0f0', font: { family: "'Inter', sans-serif", size: 14 } }
+             summaryChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Correct Guesses', 'Wrong Attempts'],
+                    datasets: [{
+                        data: [correctCount, wrongCount],
+                        backgroundColor: ['#2ECC40', '#FF4136'],
+                        borderColor: '#1a1a1a',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { color: '#f0f0f0', font: { family: "'Inter', sans-serif", size: 14 } }
+                        }
                     }
                 }
-            }
-        });
+            });
+        }, 50); // 50 milisaniye gecikme
 
-        // Ekran zaten 'flex' yapıldı, şimdi sadece animasyonla opaklığını açıyoruz
+        // Animasyonu hemen başlatabiliriz, chart arkadan yetişecek
         gsap.to(summaryScreen, { duration: 0.5, opacity: 1 });
         gameUI.style.pointerEvents = 'none';
         gsap.to(gameUI, { duration: 0.5, opacity: 0 });

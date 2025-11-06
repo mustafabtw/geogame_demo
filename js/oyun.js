@@ -1,5 +1,46 @@
 window.onload = function() {
 
+    // === DOĞRUDAN GİRİŞ İNTROSU (OTOMATİK OYNATMA) ===
+    // Not: Tarayıcı izin verirse ses çalar, vermezse animasyon sessiz devam eder.
+    const introMusic = new Audio('audio/intro_music.mp3');
+    introMusic.volume = 0.7;
+
+    // Müziği başlatmaya zorla
+    const playPromise = introMusic.play();
+    if (playPromise !== undefined) {
+        playPromise.catch(error => {
+            console.log("Otomatik oynatma tarayıcı tarafından engellendi. Intro sessiz devam edecek.");
+        });
+    }
+
+    // Animasyon Zaman Çizelgesi
+    const introTl = gsap.timeline({
+        onComplete: () => {
+            // Intro bitince ekranı kaldır
+            gsap.to('#intro-screen', { 
+                duration: 1.0, 
+                opacity: 0, 
+                onComplete: () => {
+                    document.getElementById('intro-screen').style.display = 'none';
+                    introMusic.pause(); // Müzik hala çalıyorsa sustur
+                }
+            });
+        }
+    });
+
+    // Müzikle Senkronize Animasyon Akışı (2.5 saniyede patlama)
+    introTl.fromTo('.intro-content', 
+        { opacity: 0, scale: 0.8, y: 30, filter: "blur(10px)", visibility: 'visible' },
+        { duration: 2.5, opacity: 1, scale: 1, y: 0, filter: "blur(0px)", ease: "power2.out" }
+    )
+    .to('.intro-content', { // Peak noktası (Müzik patlaması)
+        duration: 0.15, scale: 1.15, filter: "brightness(2)", ease: "power1.inOut"
+    })
+    .to('.intro-content', { // Yok oluş
+        duration: 0.8, opacity: 0, scale: 1.5, filter: "blur(20px)", ease: "power2.in"
+    }, "+=0.2"); // Patlamadan sonra çok kısa bekle ve yok ol
+
+
     // === TÜM DÜNYA BAŞKENTLERİ (Otomatik Tamamlama İçin) ===
     const allCapitals = [
         "Abu Dhabi", "Abuja", "Accra", "Addis Ababa", "Algiers", "Amman", "Amsterdam", "Andorra la Vella", "Ankara", "Antananarivo", "Apia", "Ashgabat", "Asmara", "Asuncion", "Athens", "Baghdad", "Baku", "Bamako", "Bandar Seri Begawan", "Bangkok", "Bangui", "Banjul", "Basseterre", "Beijing", "Beirut", "Belgrade", "Belmopan", "Berlin", "Bern", "Bishkek", "Bissau", "Bogota", "Brasilia", "Bratislava", "Brazzaville", "Bridgetown", "Brussels", "Bucharest", "Budapest", "Buenos Aires", "Bujumbura", "Cairo", "Canberra", "Caracas", "Castries", "Chisinau", "Conakry", "Copenhagen", "Dakar", "Damascus", "Dhaka", "Dili", "Djibouti", "Dodoma", "Doha", "Dublin", "Dushanbe", "Freetown", "Funafuti", "Gaborone", "Georgetown", "Gitega", "Guatemala City", "Hanoi", "Harare", "Havana", "Helsinki", "Honiara", "Islamabad", "Jakarta", "Jerusalem", "Juba", "Kabul", "Kampala", "Kathmandu", "Khartoum", "Kiev", "Kigali", "Kingston", "Kinshasa", "Kuala Lumpur", "Kuwait City", "Libreville", "Lilongwe", "Lima", "Lisbon", "Ljubljana", "Lome", "London", "Luanda", "Lusaka", "Luxembourg", "Madrid", "Majuro", "Malabo", "Male", "Managua", "Manama", "Manila", "Maputo", "Maseru", "Mbabane", "Melekeok", "Mexico City", "Minsk", "Mogadishu", "Monaco", "Monrovia", "Montevideo", "Moroni", "Moscow", "Muscat", "Nairobi", "Nassau", "Naypyidaw", "N'Djamena", "New Delhi", "Ngerulmud", "Niamey", "Nicosia", "Nouakchott", "Nuku'alofa", "Nur-Sultan", "Oslo", "Ottawa", "Palikir", "Panama City", "Paramaribo", "Paris", "Phnom Penh", "Podgorica", "Port Louis", "Port Moresby", "Port of Spain", "Port-au-Prince", "Porto-Novo", "Prague", "Praia", "Pretoria", "Pristina", "Pyongyang", "Quito", "Rabat", "Reykjavik", "Riga", "Riyadh", "Rome", "Roseau", "Saint George's", "Saint John's", "San Jose", "San Marino", "San Salvador", "Sana'a", "Santiago", "Santo Domingo", "Sao Tome", "Sarajevo", "Seoul", "Singapore", "Skopje", "Sofia", "South Tarawa", "Sri Jayawardenepura Kotte", "Stockholm", "Sucre", "Suva", "Taipei", "Tallinn", "Tashkent", "Tbilisi", "Tegucigalpa", "Tehran", "Thimphu", "Tirana", "Tokyo", "Tripoli", "Tunis", "Ulaanbaatar", "Vaduz", "Valletta", "Victoria", "Vienna", "Vientiane", "Vilnius", "Warsaw", "Washington", "Wellington", "Windhoek", "Yamoussoukro", "Yaounde", "Yerevan", "Zagreb"
@@ -291,13 +332,11 @@ window.onload = function() {
             wrongAnswersList.appendChild(li);
         }
 
-        // KRİTİK DÜZELTME: Chart oluşumunu GECİKTİRİYORUZ.
-        // Önce ekranı görünür yapıyoruz:
+        // --- CHART.JS GRAFİK OLUŞTURMA (GECİKMELİ) ---
         summaryScreen.style.opacity = 0;
         summaryScreen.style.display = 'flex';
         summaryScreen.style.pointerEvents = 'all';
 
-        // 50ms gecikme ile chart'ı çizdiriyoruz ki tarayıcı boyutları algılasın:
         setTimeout(() => {
              const ctx = document.getElementById('summaryChart').getContext('2d');
              if (summaryChart) { summaryChart.destroy(); }
@@ -327,9 +366,8 @@ window.onload = function() {
                     }
                 }
             });
-        }, 50); // 50 milisaniye gecikme
+        }, 50);
 
-        // Animasyonu hemen başlatabiliriz, chart arkadan yetişecek
         gsap.to(summaryScreen, { duration: 0.5, opacity: 1 });
         gameUI.style.pointerEvents = 'none';
         gsap.to(gameUI, { duration: 0.5, opacity: 0 });

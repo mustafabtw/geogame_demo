@@ -506,10 +506,23 @@ window.onload = function() {
         totalScore = 0;
         hintsUsed = 0;
         wrongAnswers = [];
+
+        // === EKLENEN DÜZELTME: ESKİ ÇİZGİLERİ TEMİZLE ===
+        if (gameLayer) {
+            const source = gameLayer.getSource();
+            // Kaynaktaki her şeyi (eski yollar + uçak) temizle
+            source.clear(); 
+            // Sadece uçağı (playerPawn) başlangıç için geri ekle
+            source.addFeature(playerPawn); 
+        }
+        // === DÜZELTME BİTTİ ===
+
         updateTokenUI();
         updateLifeUI();
         updateTimerUI();
         startTimer();
+        
+        // Geri kalan kod aynı...
         gsap.to(startMenu, { duration: 0.5, opacity: 0, onComplete: () => { startMenu.style.display = 'none'; startMenu.style.pointerEvents = 'none'; } });
         gameUI.style.display = 'flex';
         gameUI.style.pointerEvents = 'all';
